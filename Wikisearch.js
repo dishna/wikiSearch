@@ -1,12 +1,20 @@
 function handleSubmit(event) {
   // prevent page from reloading when form is submitted
   event.preventDefault();
-  // get the value of the input field
   const input = document.querySelector(".searchForm-input").value;
-  // remove whitespace from the input
   const searchQuery = input.trim();
-  // call `fetchResults` and pass it the `searchQuery`
-  fetchResults(searchQuery);
+  let message = document.querySelector(".message");
+  message.innerHTML = "";
+  if(searchQuery === "")
+  {
+      const searchResults = document.querySelector(".searchResults");
+      searchResults.innerHTML = "";
+      message.innerHTML = "Error - please enter search text";
+  }
+  else
+  {
+      fetchResults(searchQuery);
+  }
 }
 
 function fetchResults(searchQuery) {
@@ -15,9 +23,14 @@ function fetchResults(searchQuery) {
     .then(response => response.json())
     .then(({ query }) => {
       const results = query.search;
+      console.log("got data");
       displayResults(results);
-      return 'foo';
-    });
+    })
+    .catch(function(error){
+      console.log("error");
+    }
+    );
+
 }
 
 function dynamicSort(property) {
@@ -36,9 +49,7 @@ function dynamicSort(property) {
 }
 
 function displayResults(results) {
-  // Store a reference to `.searchResults`
   const searchResults = document.querySelector(".searchResults");
-  // Remove all child elements
   searchResults.innerHTML = "";
   results.sort(dynamicSort("title"));
 
